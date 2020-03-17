@@ -1,13 +1,14 @@
 # Import required libs
 from bs4 import BeautifulSoup as bs
 import requests
+import pickle
 
 # Set keywords and the first site to search
 base_url = 'https://timesofindia.indiatimes.com'
 location = '/world/us'
 
 keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'Supreme Court', 'House of Representatives',
-            'Congress', 'US President', 'Capitol Hill', 'Washington')
+            'Congress', 'US President', 'Capitol Hill', 'Washington', 'US Army', 'US Air Force', 'US Navy', 'US Marines')
 
 # Function for setting up the soup
 def get_soup(base_url, location):
@@ -76,7 +77,7 @@ article_text = ''
 def article_lookup(links, base_url):
     for link in links:
         soup = get_soup(base_url, link)
-        temp = soup.find(class_='_3WlLe clearfix')
+        temp = soup.find(class_='_3WlLe')
         global article_text
         article_text = article_text + ' ' + temp.get_text()
 
@@ -86,3 +87,5 @@ article_lookup(top_news_links, base_url)
 article_lookup(latest_stories_links, base_url)
 
 print(f'The results are: {article_text}')
+
+pickle.dump(article_text, open('times_article_text.p', 'wb'))
