@@ -1,25 +1,83 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 16 14:04:08 2020
-
-@author: student
-"""
-
+# Import required libs
 from bs4 import BeautifulSoup as bs
 import requests
-import pandas as pd
-import numpy as np
-import re
 
-kw = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'Supreme Court', 'House of Representatives', 'Congress', 'US President')
+# Set keywords and the first site to search
+base_url = 'https://timesofindia.indiatimes.com'
+location = '/world/us'
 
-test = requests.get('https://timesofindia.indiatimes.com/world/us')
+keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'Supreme Court', 'House of Representatives', 'Congress', 'US President', 'Capitol Hill')
 
-soup = bs(test.content, 'html.parser')
-#print(soup.find_all('a'))
+# Function for setting up the soup
+def get_soup(base_url, location):
+    page = requests.get(base_url + location)
+    soup = bs(page.content, 'html.parser')
+    return soup
 
-top_news = soup.find('ul', class_ ='top-newslist clearfix')
-latest_stories = soup.find('ul', class_ = 'list5 clearfix')
 
-print(top_news.prettify())
-print(latest_stories.prettify())
+soup = get_soup(base_url, location)
+
+# Grabs the "top news" stories from the page and iterates down to the "li" tags
+top_news = {}
+top_news_list = soup.find('ul', class_ = 'top-newslist clearfix')
+top_news_items = top_news_list.find_all('li')
+
+# Grabs the html location and title for each "top news" story and saves them to a dictionary
+for item in top_news_items:
+    for top_news_items in item.find_all('a'):
+        top_news.update({top_news_items.get('href'):top_news_items.get('title')})
+
+# Cleans the dictionary of "None" type entries
+filtered = {k: v for k, v in top_news.items() if v is not None}
+top_news.clear()
+top_news.update(filtered)
+
+# Grabs the "latest news" stories from the page and iterates down to the "li" tags
+latest_stories = {}
+latest_stories_list = soup.find('ul', class_ = 'list5 clearfix')
+latest_stories_items = latest_stories_list.find_all('li')
+
+# Grabs the html location and title for each "latest news" story and saves them to a dictionary
+for item in latest_stories_items:
+    for latest_stories_items in item.find_all('a'):
+        latest_stories.update({latest_stories_items.get('href'):latest_stories_items.get('title')})
+
+# Cleans the dictionary of "None" type entries
+filtered = {k: v for k, v in latest_stories.items() if v is not None}
+latest_stories.clear()
+latest_stories.update(filtered)
+
+# Definition for filtering the values of dictionaries by keywords and return keys to a list (only if the key has not already been added to that list)
+def dict_search(input_dict, keywords_list, save_location):
+    for k, v in input_dict.items():
+        for keyword in keywords_list:
+            if keyword in v:
+                if v not in save_location:
+                    save_location.append(k)
+
+
+top_news_links = []
+latest_stories_links = []
+
+# Pulling the html location keys out of the dictionaries created above into a pair of lists
+dict_search(top_news, keywords, top_news_links)
+dict_search(latest_stories, keywords, latest_stories_links)
+
+print(f'{len(top_news_links)} results where found in Top News Stories.')
+print(f'{len(latest_stories_links)} results where found in Latest News Stories.')
+
+article_text = ''
+
+# Definition for pulling the body text from the Time of India articles identified above
+def article_lookup(links, base_url):
+    for link in links:
+        soup = get_soup(base_url, link)
+        temp = soup.find(class_='_3WlLe clearfix')
+        global article_text
+        article_text = article_text + ' ' + temp.get_text()
+
+# Pulling the articles and saving their text to a string
+article_lookup(top_news_links, base_url)
+article_lookup(latest_stories_links, base_url)
+
+print(f'The results are: {article_text}')
