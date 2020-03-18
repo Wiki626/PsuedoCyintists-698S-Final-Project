@@ -70,8 +70,8 @@ news_stories_links = []
 # Pulling the html location keys out of the dictionaries created above into a pair of lists
 dict_search(trending_news, keywords, trending_news_links)
 print(f'{len(trending_news_links)} results were found in NDTV World Trending Stories.')
-dict_search(new_stories, keywords, new_stories_links)
-print(f'{len(new_stories_links)} results were found in NDTV World News Stories.')
+dict_search(new_stories, keywords, news_stories_links)
+print(f'{len(news_stories_links)} results were found in NDTV World News Stories.')
 
 article_text = ''
 
