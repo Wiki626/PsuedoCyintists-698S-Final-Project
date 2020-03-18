@@ -71,21 +71,20 @@ print(f'{len(top_news_links)} results where found in Times of India US Top News 
 dict_search(latest_stories, keywords, latest_stories_links)
 print(f'{len(latest_stories_links)} results where found in Times of India US Latest News Stories.')
 
-article_text = ''
-
 # Definition for pulling the body text from the Time of India articles identified above
-def article_lookup(links, base_url):
+def article_lookup(links, base_url, save_location):
     for link in links:
         soup = get_soup(base_url, link)
         temp = soup.find(class_='_3WlLe')
-        global article_text
-        article_text = article_text + ' ' + temp.get_text()
+        save_location = save_location + ' ' + temp.get_text()
+        return save_location
 
 
 # Pulling the articles and saving their text to a string
-article_lookup(top_news_links, base_url)
-article_lookup(latest_stories_links, base_url)
+times_article_text = ''
+times_article_text = article_lookup(top_news_links, base_url, times_article_text)
+times_article_text = article_lookup(latest_stories_links, base_url, times_article_text)
 
-print(f'The results are: {article_text}')
+print(f'The results are: {times_article_text}')
 
-pickle.dump(article_text, open('times_article_text.p', 'wb'))
+pickle.dump(times_article_text, open('times_article_text.p', 'wb'))
