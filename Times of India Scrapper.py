@@ -77,7 +77,7 @@ def article_lookup(links, base_url, save_location):
         soup = get_soup(base_url, link)
         temp = soup.find(class_='_3WlLe')
         save_location = save_location + ' ' + temp.get_text()
-        return save_location
+    return save_location
 
 
 # Pulling the articles and saving their text to a string
