@@ -65,13 +65,13 @@ def dict_search(input_dict, keywords_list, save_location):
 
 
 trending_news_links = []
-news_stories_links = []
+new_stories_links = []
 
 # Pulling the html location keys out of the dictionaries created above into a pair of lists
 dict_search(trending_news, keywords, trending_news_links)
 print(f'{len(trending_news_links)} results were found in NDTV World Trending Stories.')
-dict_search(new_stories, keywords, news_stories_links)
-print(f'{len(news_stories_links)} results were found in NDTV World News Stories.')
+dict_search(new_stories, keywords, new_stories_links)
+print(f'{len(new_stories_links)} results were found in NDTV World News Stories.')
 
 article_text = ''
 
@@ -87,7 +87,7 @@ def article_lookup(links, base_url, save_location):
 # Pulling the articles and saving their text to a string
 ndtv_article_text = ''
 ndtv_article_text = article_lookup(trending_news_links, base_url, ndtv_article_text)
-ndtv_article_text = article_lookup(news_stories_links, base_url, ndtv_article_text)
+ndtv_article_text = article_lookup(new_stories_links, base_url, ndtv_article_text)
 
 print(f'The results are: {ndtv_article_text}')
 
