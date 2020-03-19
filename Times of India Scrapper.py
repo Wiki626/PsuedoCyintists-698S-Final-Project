@@ -50,7 +50,6 @@ def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary
         temp = ''
         temp = location + str(x)
         soup = get_soup(base_url, temp)
-        stories_list = []
         stories_list = soup.find(class_=class_type)
         stories_items = stories_list.find_all('li')
         for item in stories_items:
