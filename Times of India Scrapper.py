@@ -36,7 +36,7 @@ top_news.update(filtered)
 
 # Grabs the "latest news" stories from the first page and iterates down to the "li" tags
 latest_stories = {}
-latest_stories_list = soup.find('ul', class_='list5 clearfix')
+latest_stories_list = soup.find(class_='list5 clearfix')
 latest_stories_items = latest_stories_list.find_all('li')
 
 # Grabs the html location and title for each "latest news" story and saves them to a dictionary
@@ -44,14 +44,14 @@ for item in latest_stories_items:
     for latest_stories_items in item.find_all('a'):
         latest_stories.update({latest_stories_items.get('href'): latest_stories_items.get('title')})
 
-def grab_extra_pages(base_url, location, number_of_pages, dictionary):
+def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary):
     x = 2
     while x <= number_of_pages:
         temp = ''
-        temp = location + r'/' + str(x)
+        temp = location + str(x)
         soup = get_soup(base_url, temp)
         stories_list = []
-        stories_list = soup.find('ul', class_='list5 clearfix')
+        stories_list = soup.find(class_=class_type)
         stories_items = stories_list.find_all('li')
         for item in stories_items:
             for stories_items in item.find_all('a'):
@@ -59,7 +59,7 @@ def grab_extra_pages(base_url, location, number_of_pages, dictionary):
         x += 1
 
 
-grab_extra_pages(base_url, location, 10, latest_stories)
+grab_extra_pages(base_url, '/world/us/', 10, 'list5 clearfix', latest_stories)
 
 print(latest_stories)
 
