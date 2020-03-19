@@ -34,7 +34,7 @@ filtered = {k: v for k, v in top_news.items() if v is not None}
 top_news.clear()
 top_news.update(filtered)
 
-# Grabs the "latest news" stories from the page and iterates down to the "li" tags
+# Grabs the "latest news" stories from the first page and iterates down to the "li" tags
 latest_stories = {}
 latest_stories_list = soup.find('ul', class_='list5 clearfix')
 latest_stories_items = latest_stories_list.find_all('li')
@@ -43,6 +43,25 @@ latest_stories_items = latest_stories_list.find_all('li')
 for item in latest_stories_items:
     for latest_stories_items in item.find_all('a'):
         latest_stories.update({latest_stories_items.get('href'): latest_stories_items.get('title')})
+
+def grab_extra_pages(base_url, location, number_of_pages, dictionary):
+    x = 2
+    while x <= number_of_pages:
+        temp = ''
+        temp = location + r'/' + str(x)
+        soup = get_soup(base_url, temp)
+        stories_list = []
+        stories_list = soup.find('ul', class_='list5 clearfix')
+        stories_items = stories_list.find_all('li')
+        for item in stories_items:
+            for stories_items in item.find_all('a'):
+                dictionary.update({stories_items.get('href'): stories_items.get('title')})
+        x += 1
+
+
+grab_extra_pages(base_url, location, 10, latest_stories)
+
+print(latest_stories)
 
 # Cleans the dictionary of "None" type entries
 filtered = {k: v for k, v in latest_stories.items() if v is not None}
@@ -76,7 +95,8 @@ def article_lookup(links, base_url, save_location):
     for link in links:
         soup = get_soup(base_url, link)
         temp = soup.find(class_='_3WlLe')
-        save_location = save_location + ' ' + temp.get_text()
+        if temp is not None:
+            save_location = save_location + ' ' + temp.get_text()
     return save_location
 
 

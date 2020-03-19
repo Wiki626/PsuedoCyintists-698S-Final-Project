@@ -46,6 +46,7 @@ for item in new_stories_items:
     for new_stories_items in item.find_all('a'):
         new_stories.update({new_stories_items.get('href'): new_stories_items.get('title')})
 
+
 # Cleans the dictionary of "None" type entries
 filtered = {k: v for k, v in new_stories.items() if v is not None}
 new_stories.clear()
@@ -75,6 +76,7 @@ print(f'{len(new_stories_links)} results were found in NDTV World News Stories.'
 
 article_text = ''
 
+
 # Definition for pulling the body text from the NDTV articles identified above
 def article_lookup(links, base_url, save_location):
     for link in links:
@@ -83,6 +85,8 @@ def article_lookup(links, base_url, save_location):
         save_location = save_location + ' ' + temp.get_text()
     return save_location
 
+# Blanking the base_url string
+base_url = ''
 
 # Pulling the articles and saving their text to a string
 ndtv_article_text = ''
