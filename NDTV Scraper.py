@@ -29,6 +29,23 @@ for item in trending_news_items:
     for trending_news_items in item.find_all('a'):
         trending_news.update({trending_news_items.get('href'): trending_news_items.get('title')})
 
+new_stories = {}
+
+def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary):
+    x = 2
+    while x <= number_of_pages:
+        temp = ''
+        temp = location + str(x)
+        soup = get_soup(base_url, temp)
+        stories_list = soup.find(class_=class_type)
+        stories_items = stories_list.find_all('li')
+        for item in stories_items:
+            for stories_items in item.find_all('a'):
+                dictionary.update({stories_items.get('href'): stories_items.get('title')})
+        x += 1
+
+grab_extra_pages(base_url, '/world-news/page-', 10, 'new_storylising', new_stories)
+
 # Cleans the dictionary of "None" type entries
 filtered = {k: v for k, v in trending_news.items() if v is not None}
 trending_news.clear()
@@ -37,7 +54,7 @@ trending_news.update(filtered)
 # Grabs the "new stories" from the page and iterates down to the "li" tags.
 # NDTV's HTML appears to have a typo.  "new_storylising" should probably have a
 # t for 'listing', but this code is written as it appears in the HTML.
-new_stories = {}
+
 new_stories_list = soup.find(class_='new_storylising')
 new_stories_items = new_stories_list.find_all('li')
 
@@ -45,7 +62,6 @@ new_stories_items = new_stories_list.find_all('li')
 for item in new_stories_items:
     for new_stories_items in item.find_all('a'):
         new_stories.update({new_stories_items.get('href'): new_stories_items.get('title')})
-
 
 # Cleans the dictionary of "None" type entries
 filtered = {k: v for k, v in new_stories.items() if v is not None}
@@ -76,6 +92,7 @@ print(f'{len(new_stories_links)} results were found in NDTV World News Stories.'
 
 article_text = ''
 
+base_url = ''
 
 # Definition for pulling the body text from the NDTV articles identified above
 def article_lookup(links, base_url, save_location):
@@ -85,8 +102,6 @@ def article_lookup(links, base_url, save_location):
         save_location = save_location + ' ' + temp.get_text()
     return save_location
 
-# Blanking the base_url string
-base_url = ''
 
 # Pulling the articles and saving their text to a string
 ndtv_article_text = ''
