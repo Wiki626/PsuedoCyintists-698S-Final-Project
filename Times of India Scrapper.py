@@ -44,6 +44,7 @@ for item in latest_stories_items:
     for latest_stories_items in item.find_all('a'):
         latest_stories.update({latest_stories_items.get('href'): latest_stories_items.get('title')})
 
+# Definition to grab extra pages worth of articles
 def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary):
     x = 2
     while x <= number_of_pages:
@@ -58,9 +59,8 @@ def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary
         x += 1
 
 
+# Grabbing the next 9 pages of articles and adding them to the dictionary
 grab_extra_pages(base_url, '/world/us/', 10, 'list5 clearfix', latest_stories)
-
-print(latest_stories)
 
 # Cleans the dictionary of "None" type entries
 filtered = {k: v for k, v in latest_stories.items() if v is not None}
@@ -90,10 +90,10 @@ dict_search(latest_stories, keywords, latest_stories_links)
 print(f'{len(latest_stories_links)} results where found in Times of India US Latest News Stories.')
 
 # Definition for pulling the body text from the Time of India articles identified above
-def article_lookup(links, base_url, save_location):
+def article_lookup(links, base_url, class_name, save_location):
     for link in links:
         soup = get_soup(base_url, link)
-        temp = soup.find(class_='_3WlLe')
+        temp = soup.find(class_=class_name)
         if temp is not None:
             save_location = save_location + ' ' + temp.get_text()
     return save_location
@@ -101,8 +101,8 @@ def article_lookup(links, base_url, save_location):
 
 # Pulling the articles and saving their text to a string
 times_article_text = ''
-times_article_text = article_lookup(top_news_links, base_url, times_article_text)
-times_article_text = article_lookup(latest_stories_links, base_url, times_article_text)
+times_article_text = article_lookup(top_news_links, base_url, '_3WlLe', times_article_text)
+times_article_text = article_lookup(latest_stories_links, base_url, '_3WlLe', times_article_text)
 
 print(f'The results are: {times_article_text}')
 

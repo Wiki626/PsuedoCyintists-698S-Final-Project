@@ -31,6 +31,7 @@ for item in trending_news_items:
 
 new_stories = {}
 
+# Definition to grab extra pages worth of articles
 def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary):
     x = 2
     while x <= number_of_pages:
@@ -44,6 +45,8 @@ def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary
                 dictionary.update({stories_items.get('href'): stories_items.get('title')})
         x += 1
 
+
+# Grabbing the next 9 pages of articles and adding them to the dictionary
 grab_extra_pages(base_url, '/world-news/page-', 10, 'new_storylising', new_stories)
 
 # Cleans the dictionary of "None" type entries
@@ -90,23 +93,22 @@ print(f'{len(trending_news_links)} results were found in NDTV World Trending Sto
 dict_search(new_stories, keywords, new_stories_links)
 print(f'{len(new_stories_links)} results were found in NDTV World News Stories.')
 
-article_text = ''
-
 base_url = ''
 
 # Definition for pulling the body text from the NDTV articles identified above
-def article_lookup(links, base_url, save_location):
+def article_lookup(links, base_url, class_name, save_location):
     for link in links:
         soup = get_soup(base_url, link)
-        temp = soup.find(class_='sp-cn ins_storybody')
-        save_location = save_location + ' ' + temp.get_text()
+        temp = soup.find(class_=class_name)
+        if temp is not None:
+            save_location = save_location + ' ' + temp.get_text()
     return save_location
 
 
 # Pulling the articles and saving their text to a string
 ndtv_article_text = ''
-ndtv_article_text = article_lookup(trending_news_links, base_url, ndtv_article_text)
-ndtv_article_text = article_lookup(new_stories_links, base_url, ndtv_article_text)
+ndtv_article_text = article_lookup(trending_news_links, base_url, 'sp-cn ins_storybody', ndtv_article_text)
+ndtv_article_text = article_lookup(new_stories_links, base_url, 'sp-cn ins_storybody', ndtv_article_text)
 
 print(f'The results are: {ndtv_article_text}')
 
