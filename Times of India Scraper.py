@@ -59,7 +59,7 @@ def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary
 
 
 # Grabbing the next 9 pages of articles and adding them to the dictionary
-grab_extra_pages(base_url, '/world/us/', 10, 'list5 clearfix', latest_stories)
+grab_extra_pages(base_url, '/world/us/', 30, 'list5 clearfix', latest_stories)
 
 # Cleans the dictionary of "None" type entries
 filtered = {k: v for k, v in latest_stories.items() if v is not None}
