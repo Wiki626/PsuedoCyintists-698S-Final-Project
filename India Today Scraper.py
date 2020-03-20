@@ -41,17 +41,18 @@ def it_grab_extra_pages(base_url, location, number_of_pages, class_type, diction
         temp = location + str(x)
         soup = get_soup(base_url, temp)
         stories_list = soup.find(class_=class_type)
-        stories_items = stories_list.find_all(class_='detail')
-        for item in stories_items:
-            for anchor_item in item.find_all('a'):
-                for paragraph_item in item.find_all('p'):
-                    clean = paragraph_item.get_text()
-                    clean = clean.replace('\n', ' ')
-                    dictionary.update({anchor_item.get('href'): clean})
+        if stories_list is not None:
+            stories_items = stories_list.find_all(class_='detail')
+            for item in stories_items:
+                for anchor_item in item.find_all('a'):
+                    for paragraph_item in item.find_all('p'):
+                        clean = paragraph_item.get_text()
+                        clean = clean.replace('\n', ' ')
+                        dictionary.update({anchor_item.get('href'): clean})
         x += 1
 
 # Grabbing the next 9 pages of articles and adding them to the dictionary
-it_grab_extra_pages(base_url, '/world/?page=', 10, 'view-content', it_stories)
+it_grab_extra_pages(base_url, '/world/?page=', 30, 'view-content', it_stories)
 
 #Cleans the dictionary of "None" type entries
 filtered = {k: v for k, v in it_stories.items() if v is not None}
