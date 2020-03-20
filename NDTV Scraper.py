@@ -35,7 +35,6 @@ new_stories = {}
 def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary):
     x = 2
     while x <= number_of_pages:
-        temp = ''
         temp = location + str(x)
         soup = get_soup(base_url, temp)
         stories_list = soup.find(class_=class_type)

@@ -21,7 +21,7 @@ soup = get_soup(base_url, location)
 
 # Grabs the "top news" stories from the page and iterates down to the "li" tags
 top_news = {}
-top_news_list = soup.find('ul', class_='top-newslist clearfix')
+top_news_list = soup.find(class_='top-newslist clearfix')
 top_news_items = top_news_list.find_all('li')
 
 # Grabs the html location and title for each "top news" story and saves them to a dictionary
@@ -48,7 +48,6 @@ for item in latest_stories_items:
 def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary):
     x = 2
     while x <= number_of_pages:
-        temp = ''
         temp = location + str(x)
         soup = get_soup(base_url, temp)
         stories_list = soup.find(class_=class_type)
