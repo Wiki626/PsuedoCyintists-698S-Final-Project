@@ -14,10 +14,9 @@ import pickle
 base_url = 'https://www.indiatoday.in'
 location = '/world'
 
-keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 
-            'Supreme Court', 'House of Representatives', 'Congress', 
-            'US President', 'Capitol Hill', 'Washington', 'US Army', 
-            'US Air Force', 'US Navy', 'US Marines', 'US Coast Guard')
+keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'US Supreme Court', 'House of Representatives',
+            'US Congress', 'US President', 'Capitol Hill', 'Washington', 'US Army', 'US Air Force', 'US Navy',
+            'US Marines', 'US Coast Guard')
 
 def get_soup(base_url, location):
     page = requests.get(base_url + location)
