@@ -7,8 +7,9 @@ import pickle
 base_url = 'http://en.people.cn'
 location = '/90777/index.html'
 
-keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'Supreme Court', 'House of Representatives',
-            'Congress', 'US President', 'Capitol Hill', 'Washington', 'US Army', 'US Air Force', 'US Navy', 'US Marines')
+keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'US Supreme Court', 'House of Representatives',
+            'US Congress', 'US President', 'Capitol Hill', 'Washington', 'US Army', 'US Air Force', 'US Navy',
+            'US Marines', 'US Coast Guard')
 
 # Function for setting up the soup
 def get_soup(base_url, location):
