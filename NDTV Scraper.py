@@ -3,34 +3,11 @@ from bs4 import BeautifulSoup as bs
 import requests
 import pickle
 
-# Set keywords and the first site to search
-base_url = 'https://www.ndtv.com'
-location = '/world-news'
-
-keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'US Supreme Court', 'House of Representatives',
-            'US Congress', 'US President', 'Capitol Hill', 'Washington', 'US Army', 'US Air Force', 'US Navy',
-            'US Marines', 'US Coast Guard')
-
 # Function for setting up the soup
 def get_soup(base_url, location):
     page = requests.get(base_url + location)
     soup = bs(page.content, 'html.parser')
     return soup
-
-
-soup = get_soup(base_url, location)
-
-# Grabs the "trending" stories from the page and iterates down to the "li" tags.
-trending_news = {}
-trending_news_list = soup.find(class_='trending_insidelist1')
-trending_news_items = trending_news_list.find_all('li')
-
-# Grabs the html location and title for each "trending news" story and saves them to a dictionary
-for item in trending_news_items:
-    for trending_news_items in item.find_all('a'):
-        trending_news.update({trending_news_items.get('href'): trending_news_items.get('title')})
-
-new_stories = {}
 
 # Definition to grab extra pages worth of articles
 def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary):
@@ -46,6 +23,50 @@ def grab_extra_pages(base_url, location, number_of_pages, class_type, dictionary
                     dictionary.update({stories_items.get('href'): stories_items.get('title')})
         x += 1
 
+'''
+Definition for filtering the values of dictionaries by keywords and return keys to a list (only if the key has not
+already been added to that list)
+'''
+def dict_search(input_dict, keywords_list, save_location):
+    temp = []
+    for k, v in input_dict.items():
+        for keyword in keywords_list:
+            if keyword in v:
+                if v not in save_location:
+                    save_location.append(k)
+                    temp.append(keyword)
+    print(f'The keywords that triggered were {temp}.')
+
+# Definition for pulling the body text from the NDTV articles identified above
+def article_lookup(links, base_url, class_name, save_location):
+    for link in links:
+        soup = get_soup(base_url, link)
+        temp = soup.find(class_=class_name)
+        if temp is not None:
+            save_location = save_location + ' ' + temp.get_text()
+    return save_location
+
+# Set keywords and the first site to search
+base_url = 'https://www.ndtv.com'
+location = '/world-news'
+
+keywords = ('Fed', 'White House', 'Trump', 'US Senate', 'US Government', 'US Supreme Court', 'House of Representatives',
+            'US Congress', 'US President', 'Capitol Hill', 'Washington', 'US Foreign Policy','US Army', 'US Air Force',
+            'US Navy','US Marines', 'US Coast Guard')
+
+soup = get_soup(base_url, location)
+
+# Grabs the "trending" stories from the page and iterates down to the "li" tags.
+trending_news = {}
+trending_news_list = soup.find(class_='trending_insidelist1')
+trending_news_items = trending_news_list.find_all('li')
+
+# Grabs the html location and title for each "trending news" story and saves them to a dictionary
+for item in trending_news_items:
+    for trending_news_items in item.find_all('a'):
+        trending_news.update({trending_news_items.get('href'): trending_news_items.get('title')})
+
+new_stories = {}
 
 # Grabbing the next 9 pages of articles and adding them to the dictionary
 grab_extra_pages(base_url, '/world-news/page-', 30, 'new_storylising', new_stories)
@@ -72,19 +93,6 @@ filtered = {k: v for k, v in new_stories.items() if v is not None}
 new_stories.clear()
 new_stories.update(filtered)
 
-# Definition for filtering the values of dictionaries by keywords and return keys to a list (only if the key has not
-# already been added to that list)
-def dict_search(input_dict, keywords_list, save_location):
-    temp = []
-    for k, v in input_dict.items():
-        for keyword in keywords_list:
-            if keyword in v:
-                if v not in save_location:
-                    save_location.append(k)
-                    temp.append(keyword)
-    print(f'The keywords that triggered were {temp}.')
-
-
 trending_news_links = []
 new_stories_links = []
 
@@ -95,16 +103,6 @@ dict_search(new_stories, keywords, new_stories_links)
 print(f'{len(new_stories_links)} results were found in NDTV World News Stories.')
 
 base_url = ''
-
-# Definition for pulling the body text from the NDTV articles identified above
-def article_lookup(links, base_url, class_name, save_location):
-    for link in links:
-        soup = get_soup(base_url, link)
-        temp = soup.find(class_=class_name)
-        if temp is not None:
-            save_location = save_location + ' ' + temp.get_text()
-    return save_location
-
 
 # Pulling the articles and saving their text to a string
 ndtv_article_text = ''

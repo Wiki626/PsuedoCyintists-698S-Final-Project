@@ -78,7 +78,7 @@ def dict_search(input_dict, keywords_list, save_location):
                 if v not in save_location:
                     save_location.append(k)
                     temp.append(keyword)
-print(f'The keywords that triggered were {temp}.')
+    print(f'The keywords that triggered were {temp}.')
     
 it_stories_links = []
 
